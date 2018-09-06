@@ -1,15 +1,15 @@
-FROM golang:1.11
+FROM golang:1.11-alpine
 
 RUN mkdir -p $GOPATH/src/github.com/gomods/athens
 WORKDIR $GOPATH/src/github.com/gomods/athens
 
 COPY . .
 
-RUN CGO_ENABLED=0 GO111MODULE=on go build -mod=vendor -o /bin/app ./cmd/proxy
-RUN ./scripts/create_default_config.sh
+ENV GO111MODULE=on
+RUN CGO_ENABLED=0 go build -mod=vendor -o /bin/app ./cmd/proxy
 
 ENV GO_ENV=production
 
 EXPOSE 3000
 
-ENTRYPOINT /bin/app -config_file=config.toml
+ENTRYPOINT ["/bin/app"]
